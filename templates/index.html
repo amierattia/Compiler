@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        form {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+            resize: none;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background: #e8f5e9;
+            margin: 5px 0;
+            padding: 8px 12px;
+            border-radius: 5px;
+            color: #333;
+            font-size: 14px;
+            border: 1px solid #c8e6c9;
+        }
+        p {
+            font-size: 14px;
+            color: #555;
+        }
+        .results {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Code Analyzer</h1>
+    <form method="post">
+        <label for="code">Enter your code:</label><br>
+        <textarea id="code" name="code" rows="5" cols="50" placeholder="int x = 10;"></textarea><br><br>
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if result %}
+        <div class="results">
+            <h2>Analysis Results:</h2>
+
+            <h3>Lexical Analysis:</h3>
+            <ul>
+                {% for token in result.tokens %}
+                    <li>{{ token }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Syntax Analysis:</h3>
+            <p class="{{ 'success' if result.is_syntax_correct else 'error' }}">
+                {{ result.semantic_error if not result.is_syntax_correct else "Syntax is correct!" }}
+            </p>
+
+            <h3>Semantic Analysis:</h3>
+            <p class="{{ 'success' if result.is_semantic_correct else 'error' }}">
+                {% if result.is_syntax_correct %}
+                    {{ "Semantic is correct!" if result.is_semantic_correct else result.semantic_error }}
+                {% else %}
+                    Skipped due to syntax errors.
+                {% endif %}
+            </p>
+        </div>
+    {% endif %}
+</body>
+</html>
